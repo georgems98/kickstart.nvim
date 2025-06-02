@@ -630,9 +630,8 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
-        --
-
+        ts_ls = {},
+        svelte = {},
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -930,6 +929,7 @@ require('lazy').setup({
         'rust',
         'dockerfile',
         'javascript',
+        'typescript',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
