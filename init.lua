@@ -930,6 +930,8 @@ require('lazy').setup({
         'dockerfile',
         'javascript',
         'typescript',
+        'css',
+        'scss',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
