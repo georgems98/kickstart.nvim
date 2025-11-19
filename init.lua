@@ -861,6 +861,7 @@ require('lazy').setup({
         styles = {
           comments = {}, -- Disable italics in comments
         },
+        transparent_background = true,
       }
 
       -- Load the colorscheme here.
