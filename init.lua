@@ -779,6 +779,28 @@ require('lazy').setup({
           -- },
         },
         opts = {},
+        config = function(_, opts)
+          local ls = require 'luasnip'
+          ls.config.set_config(opts)
+
+          -- Automatically “leave” snippets when you leave insert/select mode
+          -- Prevents the "tab sometimes causes cursor jump" issue
+          -- https://github.com/L3MON4D3/LuaSnip/issues/258
+          vim.api.nvim_create_autocmd('ModeChanged', {
+            pattern = '*',
+            callback = function()
+              local ev = vim.v.event
+              -- leaving select into normal, or leaving insert into anything
+              if
+                ((ev.old_mode == 's' and ev.new_mode == 'n') or ev.old_mode == 'i')
+                and ls.session.current_nodes[vim.api.nvim_get_current_buf()]
+                and not ls.session.jump_active
+              then
+                ls.unlink_current()
+              end
+            end,
+          })
+        end,
       },
       'folke/lazydev.nvim',
     },
