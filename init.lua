@@ -120,6 +120,46 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- Yank current file (useful for claude)
+local function yank_to_clipboard(text, label)
+  vim.fn.setreg('+', text)
+  vim.notify((label or 'Yanked') .. ': ' .. text)
+end
+
+local function current_buf_path_git_relative()
+  local bufname = vim.api.nvim_buf_get_name(0)
+  if bufname == '' then
+    vim.notify('No file name for current buffer', vim.log.levels.WARN)
+    return nil
+  end
+
+  -- Prefer git-root-relative
+  local git_root = vim.fs.root(bufname, { '.git' })
+  if git_root and vim.startswith(bufname, git_root .. '/') then
+    return bufname:sub(#git_root + 2) -- strip "<git_root>/"
+  end
+
+  -- Fallback: relative to current working directory
+  return vim.fn.fnamemodify(bufname, ':.')
+end
+
+vim.keymap.set('n', '<leader>yp', function()
+  local path = current_buf_path_git_relative()
+  if not path then
+    return
+  end
+  yank_to_clipboard(path, 'Yanked path')
+end, { desc = '[Y]ank file [P]ath' })
+
+vim.keymap.set('n', '<leader>yl', function()
+  local path = current_buf_path_git_relative()
+  if not path then
+    return
+  end
+  local line = vim.api.nvim_win_get_cursor(0)[1]
+  yank_to_clipboard(string.format('%s:%d', path, line), 'Yanked path+line')
+end, { desc = '[Y]ank file + [L]ine' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -274,6 +314,7 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>y', group = '[Y]ank' },
       },
     },
   },
