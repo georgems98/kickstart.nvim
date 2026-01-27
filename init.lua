@@ -326,7 +326,9 @@ require('lazy').setup({
       spec = {
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>d', group = '[D]ebug' },
+        { '<leader>h', group = '[H]arpoon', mode = { 'n' } },
+        { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
         { '<leader>y', group = '[Y]ank' },
       },
     },
