@@ -6,15 +6,10 @@ return {
     vim.g.no_plugin_maps = true
   end,
   config = function()
-    require('nvim-treesitter-textobjects').setup {
-      select = { lookahead = true },
-    }
-
-    local select = require('nvim-treesitter-textobjects.select').select_textobject
+    local select = require('nvim-treesitter.textobjects.select').select_textobject
     local map = function(lhs, query, desc)
-      vim.keymap.set({ 'x', 'o' }, lhs, function()
-        select(query)
-      end, { desc = desc })
+      vim.keymap.set('x', lhs, function() select(query, 'textobjects', 'x') end, { desc = desc })
+      vim.keymap.set('o', lhs, function() select(query, 'textobjects', 'o') end, { desc = desc })
     end
 
     map('am', '@function.outer', 'method or function')
