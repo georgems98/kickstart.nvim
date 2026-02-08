@@ -638,20 +638,27 @@ require('lazy').setup({
         },
       }
 
-      -- https://docs.astral.sh/ruff/editors/setup/#neovim
       vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+        group = vim.api.nvim_create_augroup('lsp_attach_capability_overrides', { clear = true }),
         callback = function(args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client == nil then
             return
           end
+
+          -- https://docs.astral.sh/ruff/editors/setup/#neovim
           if client.name == 'ruff' then
             -- Disable hover in favor of Pyright
             client.server_capabilities.hoverProvider = false
           end
+
+          -- Prefer to use biome or prettier for formatting
+          if client.name == 'ts_ls' then
+            client.server_capabilities.documentFormattingProvider = false
+            client.server_capabilities.documentRangeFormattingProvider = false
+          end
         end,
-        desc = 'LSP: Disable hover capability from Ruff',
+        desc = 'LSP: Override LSP capabilities on attach',
       })
 
       -- LSP servers and clients are able to communicate to each other what features they support.
@@ -678,6 +685,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
+        biome = {},
         docker_compose_language_service = {},
         dockerls = {},
         eslint = {},
