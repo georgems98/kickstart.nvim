@@ -421,6 +421,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sb', function()
         builtin.find_files { cwd = vim.fn.expand '%:p:h' }
       end, { desc = '[S]earch si[B]lings' })
+      vim.keymap.set('n', '<leader>sB', function()
+        builtin.live_grep { cwd = vim.fn.expand '%:p:h' }
+      end, { desc = '[S]earch si[B]lings (grep)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
